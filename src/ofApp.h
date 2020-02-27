@@ -2,6 +2,43 @@
 
 #include "ofMain.h"
 
+struct pingPongBuffer {
+public:
+	void allocate(int _width, int _height, int _internalformat = GL_RGBA) {
+		// Allocate
+		for (int i = 0; i < 2; i++) {
+			FBOs[i].allocate(_width, _height, _internalformat);
+			FBOs[i].getTexture().setTextureMinMagFilter(GL_NEAREST, GL_NEAREST);
+		}
+
+		//Assign
+		src = &FBOs[0];
+		dst = &FBOs[1];
+
+		// Clean
+		clear();
+	}
+
+	void swap() {
+		std::swap(src, dst);
+	}
+
+	void clear() {
+		for (int i = 0; i < 2; i++) {
+			FBOs[i].begin();
+			ofClear(0, 255);
+			FBOs[i].end();
+		}
+	}
+
+	ofFbo& operator[](int n) { return FBOs[n]; }
+	ofFbo   *src;       // Source       ->  Ping
+	ofFbo   *dst;       // Destination  ->  Pong
+
+private:
+	ofFbo   FBOs[2];    // Real addresses of ping/pong FBO«s
+};
+
 class ofApp : public ofBaseApp{
 
 	public:
@@ -20,5 +57,21 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-		
+
+		ofFbo renderFbo;
+
+		pingPongBuffer posPingPong;
+		pingPongBuffer velPingPong;
+
+		ofShader render;
+		ofShader positionUpdate;
+		ofShader velocityUpdate;
+
+		ofVboMesh mesh;
+
+		int w, h;
+		int numParticles;
+		int textureRes;
+
+		ofVec2f size;
 };
