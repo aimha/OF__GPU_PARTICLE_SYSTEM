@@ -16,8 +16,10 @@ out vec4 outputColor;
 
 uniform sampler2DRect backbuffer;   // previous velocity texture
 uniform sampler2DRect posData;      // position texture
+uniform sampler2DRect noiseField;      // noise texture
 
 uniform vec2 center;
+uniform float maxSpeed, maxForce, noiseRes;
 
 in vec2 texCoordVarying;
 
@@ -25,25 +27,23 @@ void main()
 {
   // Get the position and velocity from the pixel color.
   vec2 pos = texture( posData, texCoordVarying).xy;
+  float life = texture( posData, texCoordVarying).z;
   vec2 vel = texture( backbuffer, texCoordVarying ).xy;
   float weigth = texture( backbuffer, texCoordVarying ).z;
+  vec2 acc = texture( noiseField, vec2(pos.x * noiseRes, pos.y * noiseRes)).xy;
 
-  float timeFrame = 0.00001;
-  float limit = 1.7;
+  // compute steering behaviour
+  vec2 desired = (acc * 2. - 1.) * maxSpeed;
+  vec2 steer = desired - vel;
+  float steerMag = clamp(length(steer), 0., maxForce);
+  steer = steerMag * normalize(steer);
 
-  vec2 force = vec2(.5, .5) - pos;
+  vel += steer / weigth;
 
-  float dist = length(force);
-  vec2 dir = normalize(force);
+  // limit velocity
+  float velMag = length(vel);
+  velMag = clamp(velMag, 0., maxSpeed);
+  vel = velMag * normalize(vel);
 
-  float mag = (9.18 * weigth) / (dist * dist);
-
-  vec2 acc = mag * dir / weigth;
-
-  vel += acc * timeFrame;
-
-  vel.x = clamp(vel.x, -limit, limit);
-  vel.y = clamp(vel.y, -limit, limit);
-  
   outputColor = vec4(vel.x, vel.y, weigth, 1.0);
 }

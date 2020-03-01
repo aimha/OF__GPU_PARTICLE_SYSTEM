@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxGui.h"
 
 struct pingPongBuffer {
 public:
@@ -58,20 +59,36 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
-		ofFbo renderFbo;
+		// GUI
+		ofxPanel guiControl;
 
+		ofxFloatSlider maxSpeed;
+		ofxFloatSlider maxForce;
+		ofxIntSlider trail;
+
+		// FBOs
+		ofFbo renderFbo;
+		ofFbo noiseFbo;
+
+		// PingPong FBOs
 		pingPongBuffer posPingPong;
 		pingPongBuffer velPingPong;
 
+		// Shaders
 		ofShader render;
 		ofShader positionUpdate;
 		ofShader velocityUpdate;
 
+		// Meshes
 		ofVboMesh mesh;
 
+		// Various
 		int w, h;
 		int numParticles;
 		int textureRes;
 
+		float noiseRes;
+
 		ofVec2f size;
+		ofVec2f center;
 };

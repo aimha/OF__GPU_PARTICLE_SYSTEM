@@ -13,6 +13,7 @@ in vec4 color;
 in vec2 texcoord;
 
 uniform sampler2DRect posTex;
+uniform sampler2DRect velTex;
 
 out vec2 texCoordVarying;
 
