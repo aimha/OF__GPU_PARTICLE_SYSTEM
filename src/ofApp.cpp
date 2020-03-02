@@ -5,7 +5,7 @@ void ofApp::setup(){
 	ofBackground(0);
 	
 	// General setup
-	numParticles = 50000;
+	numParticles = 100000;
 
 	// Width and Heigth of the fbo
 	w = ofGetWidth();
@@ -36,8 +36,8 @@ void ofApp::setup(){
 	}
 
 	for (int i = 0; i < numParticles; i++) {
-		vel[i * 3 + 0] = ofRandom(-1.0, 1.0);
-		vel[i * 3 + 1] = ofRandom(-1.0, 1.0);
+		vel[i * 3 + 0] = ofRandom(-2.0, 2.0);
+		vel[i * 3 + 1] = ofRandom(-2.0, 2.0);
 		vel[i * 3 + 2] = ofRandom(.1, 1.);
 	}
 
@@ -127,8 +127,8 @@ void ofApp::draw(){
 
 	renderFbo.draw(0., 0., w, h);
 
-	posPingPong.src->draw(0., 0., 500, 500);
-	velPingPong.src->draw(0., 500 + 10., 500, 500);
+	//posPingPong.src->draw(0., 0., 500, 500);
+	//velPingPong.src->draw(0., 500 + 10., 500, 500);
 
 }
 

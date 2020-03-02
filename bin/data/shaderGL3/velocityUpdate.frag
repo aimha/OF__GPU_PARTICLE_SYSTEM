@@ -28,22 +28,21 @@ void main()
   vec2 vel = texture( backbuffer, texCoordVarying ).xy;
   float weigth = texture( backbuffer, texCoordVarying ).z;
 
-  float timeFrame = 0.00001;
-  float limit = 1.7;
+  float timeFrame = 0.00002;
+  float limit = 1.;
 
   vec2 force = vec2(.5, .5) - pos;
 
   float dist = length(force);
   vec2 dir = normalize(force);
 
-  float mag = (9.18 * weigth) / (dist * dist);
+  float mag = (8.18 * weigth) / (dist * dist);
 
   vec2 acc = mag * dir / weigth;
 
   vel += acc * timeFrame;
 
-  vel.x = clamp(vel.x, -limit, limit);
-  vel.y = clamp(vel.y, -limit, limit);
+  vel = clamp(vel, -limit, limit);
   
   outputColor = vec4(vel.x, vel.y, weigth, 1.0);
 }
