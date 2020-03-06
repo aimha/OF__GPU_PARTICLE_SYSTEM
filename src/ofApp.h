@@ -73,11 +73,13 @@ class ofApp : public ofBaseApp{
 		// PingPong FBOs
 		pingPongBuffer posPingPong;
 		pingPongBuffer velPingPong;
+		pingPongBuffer lifePingPong;
 
 		// Shaders
 		ofShader render;
 		ofShader positionUpdate;
 		ofShader velocityUpdate;
+		ofShader lifeUpdate;
 
 		// Meshes
 		ofVboMesh mesh;
@@ -91,4 +93,6 @@ class ofApp : public ofBaseApp{
 
 		ofVec2f size;
 		ofVec2f center;
+
+		// post process
 };

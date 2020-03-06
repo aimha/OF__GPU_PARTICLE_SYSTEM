@@ -12,8 +12,7 @@ in vec3 normal;
 in vec4 color;
 in vec2 texcoord;
 
-uniform sampler2DRect posTex;
-uniform sampler2DRect velTex;
+uniform sampler2DRect positionFbo;
 
 out vec2 texCoordVarying;
 
@@ -21,7 +20,7 @@ void main(){
 
     vec4 modifiedPosition = modelViewProjectionMatrix * position;
 
-    vec4 pixPos = texture( posTex, texcoord );
+    vec4 pixPos = texture( positionFbo, texcoord );
     
     modifiedPosition.x *= (pixPos.x * 2.) - 1.;
     modifiedPosition.y *= (pixPos.y * 2.) - 1.;
