@@ -20,7 +20,7 @@ uniform sampler2DRect velocityFbo;   // previous velocity texture
 uniform sampler2DRect noiseField;      // noise texture
 
 uniform vec2 center;
-uniform float maxSpeed, maxForce, noiseRes;
+uniform float maxSpeed, maxForce, lifeSpeed, noiseSize;
 
 in vec2 texCoordVarying;
 
@@ -29,33 +29,40 @@ void main()
   // Get the position and velocity from the pixel color.
   vec2 pos = texture( positionFbo, texCoordVarying).xy;
   vec2 vel = texture( velocityFbo, texCoordVarying ).xy;
-  vec2 acc = texture( noiseField, vec2(pos.x * noiseRes, pos.y * noiseRes)).xy;
 
-  float initialLife = texture( lifeFbo, texCoordVarying ).x;
   float life = texture( lifeFbo, texCoordVarying ).y;
   float w = texture( lifeFbo, texCoordVarying ).z;
 
-  // compute steering behaviour
+  vec2 acc = texture( noiseField, vec2(pos.x * noiseSize, pos.y * noiseSize)).xy;
 
-  vec2 desired = (acc * 2. - 1.) * maxSpeed;
-  vec2 steer = desired - vel;
-  float steerMag = clamp(length(steer), 0., maxForce);
-  steer = steerMag * normalize(steer);
+  // compute steering
 
-  vec2 newVel = vel + steer / (60. + w * 100.);
-  
-  // limit velocity
+  // !!! for legacy purpouse only !!! //
+  // acc.x = acc.x * 2. - 1.; // from [0, 1] to [-1, 1]
+  // acc.y = acc.y * 2. - 1.; // from [0, 1] to [-1, 1]
+
+  // vec2 desired = normalize(acc) * maxSpeed;
+
+  // vec2 steer = desired - vel;
+  // steer = maxForce * normalize(steer);
+
+  // vec2 newVel = vel + steer / (1. + 100. * w);
+
+  vec2 newVel = vel + acc / (1. + 100. * w) * maxForce;
+
   float newVelMag = length(newVel);
-  newVelMag = clamp(newVelMag, 0., maxSpeed);
-  newVel = newVelMag * normalize(newVel);
+  vec2 newVelDir = normalize(newVel);
 
-  //   // Update the position.
-  // pos += vel * .0005; // * .0005
+  newVel = clamp(newVelMag, 0., maxSpeed) * newVelDir;
 
-  // // check if respawn
-  // if ( pos.x < 0. || pos.x > 1. || pos.y < 0. || pos.y > 1. ) {
-  //   newVel = vec2(.0);
-  // }
+  // update life
+  life = clamp(life - lifeSpeed, 0., 1.);
+
+  // check if respawn
+  if ( life < lifeSpeed * 2. ) {
+    newVel = vec2(.0);
+  }
 
   outputColor = vec4(newVel.x, newVel.y, .0, 1.);
 }
+

@@ -17,7 +17,7 @@ out vec4 outputColor;
 uniform sampler2DRect lifeFbo;      // life texture
 uniform sampler2DRect positionFbo;  // previous position texture
 uniform sampler2DRect velocityFbo;      // velocity texture
-uniform float time;
+uniform float time, lifeSpeed;
 
 in vec2 texCoordVarying;
 
@@ -32,20 +32,19 @@ void main()
   vec2 vel = texture( velocityFbo, texCoordVarying).xy;
 
   float life = texture( lifeFbo, texCoordVarying).y;
+  float w = texture( lifeFbo, texCoordVarying).z;
 
   // Update the position.
   pos += vel * .0005; // * .0005
 
   // update life
-  life = clamp(life - .01, 0., 1.);
+  life = clamp(life - lifeSpeed, 0., 1.);
 
   // check if respawn
-  if ( life < 0.1) {
-    pos.x = random(pos * time);
-    pos.y = random(pos * time + vec2(0.1));
+  if ( life < lifeSpeed * 2. ) {
+    pos.x = random(vec2(w, time) + vec2(.1));
+    pos.y = random(vec2(w, time));
   }
 
   outputColor = vec4(pos.x, pos.y, 0., 1.);
 }
-
-// pos.x < 0. || pos.x > 1. || pos.y < 0. || pos.y > 1. || 

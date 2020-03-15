@@ -15,6 +15,7 @@ in vec2 texcoord;
 out vec4 outputColor;
 
 uniform sampler2DRect lifeFbo;      // life texture
+uniform sampler2DRect noiseField;      // life texture
 uniform vec2 size;
 
 in vec2 texCoordVarying;
@@ -29,5 +30,7 @@ void main()
     float life = texture( lifeFbo, texCoordVarying).y;
     float w = texture( lifeFbo, texCoordVarying).z;
 
-    outputColor = vec4(life, .0, 1., 1.);
+    vec3 n = texture( noiseField, texCoordVarying).xyz;
+
+    outputColor = vec4(1., 1., 1., sin(life / initialLife * PI) * w);
 }

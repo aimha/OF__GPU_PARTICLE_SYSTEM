@@ -64,11 +64,39 @@ class ofApp : public ofBaseApp{
 
 		ofxFloatSlider maxSpeed;
 		ofxFloatSlider maxForce;
+		ofxFloatSlider lifeLength;
 		ofxIntSlider trail;
 
+		ofxPanel guiNoises;
+
+		ofxToggle gradientNoise;
+		ofxToggle simplexNoise;
+		ofxToggle voronoiNoise;
+
+		ofxFloatSlider gradientNoiseScale;
+		ofxFloatSlider gradientNoiseAmnt;
+		ofxFloatSlider simplexNoiseScale;
+		ofxFloatSlider simplexNoiseAmnt;
+		ofxFloatSlider voronoiNoiseScale;
+		ofxFloatSlider voronoiNoiseAmnt;
+		
+		ofxFloatSlider fbmHurst;
+		ofxFloatSlider fbmFrequency;
+		ofxFloatSlider fbmRotation;
+		ofxFloatSlider warpRotation;
+		
+		ofxFloatSlider channelOffsetX;
+		ofxFloatSlider channelOffsetY;
+		
+		ofxFloatSlider contrast;
+		ofxFloatSlider noiseSeed;
+
+		ofxIntSlider fbmOctaves;
+		ofxIntSlider fbmWarp;
+		
 		// FBOs
 		ofFbo renderFbo;
-		ofFbo noiseFbo;
+		ofFbo fbmFbo;
 
 		// PingPong FBOs
 		pingPongBuffer posPingPong;
@@ -81,18 +109,21 @@ class ofApp : public ofBaseApp{
 		ofShader velocityUpdate;
 		ofShader lifeUpdate;
 
+		ofShader fbmShader;
+
 		// Meshes
 		ofVboMesh mesh;
+
+		// Geometry
+		ofPlanePrimitive fbmPlane;
 
 		// Various
 		int w, h;
 		int numParticles;
 		int textureRes;
-
-		float noiseRes;
+		int noiseSize;
 
 		ofVec2f size;
 		ofVec2f center;
-
-		// post process
+		ofVec2f noiseOffset;
 };

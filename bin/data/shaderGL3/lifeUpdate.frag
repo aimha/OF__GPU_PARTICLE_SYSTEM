@@ -15,7 +15,7 @@ in vec2 texcoord;
 out vec4 outputColor;
 
 uniform sampler2DRect lifeFbo;      // life texture
-uniform float time;
+uniform float time, lifeSpeed;
 
 in vec2 texCoordVarying;
 
@@ -31,12 +31,13 @@ void main()
   float w = texture( lifeFbo, texCoordVarying).z;
 
   // update life
-  life = clamp(life - .01, 0., 1.);
+  life = clamp(life - lifeSpeed, 0., 1.);
 
   // check if restart life
-  if ( life < 0.1 ) {
-    life = 1.;
-    initialLife = 1.;
+  if ( life < lifeSpeed * 2. ) {
+    float l = random(vec2(time, w));
+    life = l;
+    initialLife = l;
   }
   
   outputColor = vec4(initialLife, life, w, 1.);
